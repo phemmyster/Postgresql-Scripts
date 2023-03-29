@@ -1,0 +1,46 @@
+create table courses (name varchar, course varchar);
+insert into courses values ('BBB', 'Tableau'), ('CCC', 'Python'), ('DDD', 'Data Analytics'), ('EEE', 'SQL');
+Select * from courses;
+
+create table students (name varchar, age int);
+insert into students values ('AAA', 22), ('BBB', 24), ('CCC', 25), ('DDD',30);
+Select * from students;
+
+Inner Join:
+select name, course, age from students inner join courses on name=name;  --- column reference "name" is ambiguous
+select students.name, age, course from students inner join courses 
+on students.name = courses.name;
+
+Left Join:
+select students.name, age, course from students left join courses 
+on students.name = courses.name;
+
+Right Join:
+select students.name, age, courses.name, course from students right join courses 
+on students.name = courses.name;
+
+Full Join:
+select students.name, age, courses.name, course from students full join courses 
+on students.name = courses.name;
+
+Left Outer Join: ( Left Only scenario) - 
+select students.name, age, course from students left join courses 
+on students.name = courses.name where courses.name is null;
+
+Right Outer Join: (Right Only Scenario) - 
+select students.name, age, courses.name, course from students right join courses 
+on students.name = courses.name where students.name is null;
+
+Full Outer Join: (Not Inner) scenario - 
+select students.name, age, courses.name, course from students full join courses 
+on students.name = courses.name where students.name is null or course.name is null;
+
+UNIONS:
+create table May2016 (Day int, Customer varchar, Purchases int, Type varchar);
+Import the data
+create table June2016 (Day int, Customer varchar, Purchases int, Type varchar);
+Import the data
+create table July2016 (Day int, Customer varchar, Purchases int, Type varchar);
+Import the data
+
+select * from May2016 UNION select * from June2016 UNION select * from July2016;

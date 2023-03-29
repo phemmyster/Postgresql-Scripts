@@ -1,0 +1,92 @@
+Day 4 - Foreign Key Constraint, Check Constraint, DDL Commands (Create, Alter, Drop and Truncate)
+
+Create a Department table with the names of all the departments in the company -
+create table department(
+dept_name varchar(30) primary key,
+dept_head varchar(30)
+);
+
+Insert data into the departments table - 
+insert into department (dept_name,dept_head) values ('IT','Ravi Kiran'),('Finance',null),('HR','Swati Rao');
+
+Create a table employee-
+create table employee(
+id serial primary key,
+f_nm varchar(20) not null,
+l_nm varchar(20) not null,
+age int not null,
+location varchar(20) not null default 'Hyderabad',
+dept varchar(20) not null
+);
+
+Insert some values into it - 
+insert into employee (f_nm,l_nm,age,dept) values ('mohan','bhargav',30,'IT'),('manoj','bajpai',35,'HR'),('Rani','Kumari',40,'Finance');
+
+Insert more records into employee with new departments -
+insert into employee (f_nm,l_nm,age,dept) values ('priya','darshini',30,'HealthCare');
+
+Add the foreign key contraint - 
+alter table employee add foreign key(dept) references department(dept_name);
+This will fail as we already have a record with Health Care.
+
+Let's delete that record.
+delete from employee where dept = 'HealthCare';
+
+Now add the constraint - 
+alter table employee add foreign key(dept) references department(dept_name);
+
+Now try inserting a record with a deparment name that is not in the department table - 
+insert into employee (f_nm,l_nm,age,dept) values ('priya','darshini',30,'HealthCare');
+
+insert into employee (f_nm,l_nm,age,dept) values ('priya','darshini',30,'IT');
+
+Now let's try to delete a department from the department table - 
+delete from department where dept_name = 'HR'; 
+
+This is not allowed due to the foreign key constraint. 
+
+Suppose, there is no data in employee table with that department, then what would happen -
+delete from employee where dept = 'HR';
+
+Now, the (delete from department where dept_name = "HR";) statement will work.
+_____________________________________________________________________________________________________________
+
+CHECK Constraint:
+
+create table school (
+name varchar, 
+schoolname varchar default '360digitmg', 
+age int, 
+check (age>= 10));
+
+insert into school (name, age) values ('Ram',10), ('Ravi',20);
+select * from school;
+insert into school (name,age)  values ('Priya',8); ----new row for relation "school" violates check constraint "school_age_check"
+
+Eg 2:
+CREATE TABLE products ( product_no integer, name text, price numeric CHECK (price > 0) );
+insert into products values(1,'apples',100.00),(2,'oranges',200.00);
+select * from products;
+insert into products values(3,'grapes',-100.00),(4,'plums',200.00);  ---- 	new row for relation "products" violates check constraint "products_price_check"
+insert into products values(3,'grapes',150.00),(4,'plums',200.00);
+______________________________________________________________________________________________________________
+
+DDL - Create, Alter, Drop, Truncate
+
+Alter Statement-
+
+To Add a Column: ALTER TABLE table_name ADD column_name datatype;
+alter table student add column location varchar(30) not null default 'Hyderabad';
+
+To Drop a Column: ALTER TABLE table_name DROP COLUMN column_name;
+alter table student drop column location;
+
+To Change the Data Type or Size or the DataType: ALTER TABLE table_name ALTER COLUMN column_name TYPE datatype;
+alter table student alter column first_name type varchar(50);
+
+To Rename a Column:ALTER TABLE table_name RENAME COLUMN column_name TO new_column_name;
+alter table student rename column location to emp_location;
+
+Drop - deletes the entire table along with the structure
+Truncate - Drops the table and recreates the structure. We can't give "Where" clause.
+Delete - Deletes the Rows/Tuples in the table, we can give "Where" clause and delete exactly what needs to be deleted.

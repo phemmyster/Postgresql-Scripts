@@ -1,0 +1,81 @@
+Day 9 - Triggers, Indexes, DCL Commands
+
+Automatically updating the lastest timestamp whenever a record is updated
+Create table employee(
+id serial primary key,
+name varchar not null,
+dept varchar not null,
+date_of_joining date not null default current_date,
+status varchar default 'Active',
+salary real not null,
+last_updated timestamp default CURRENT_TIMESTAMP
+);
+insert into employee (name,dept,salary) values ('Ravi Kiran','HR',40000.00), 
+('Priya Darshini','IT',25000.00),('Mohan Bhargav','Finance',30000.00);
+
+select * from employee;
+
+CREATE  FUNCTION update_on_status_change()
+RETURNS TRIGGER 
+AS $$
+BEGIN
+    NEW.last_updated = now();
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+CREATE TRIGGER status_updated_on
+    BEFORE UPDATE
+    ON
+	employee
+    FOR EACH ROW
+EXECUTE PROCEDURE update_on_status_change();
+
+update employee set status='InActive' where name = 'Priya Darshini';
+______________________________________________________________________________________
+
+INDEXES:
+
+create table emp_table(id serial, emp_name varchar, salary numeric);
+insert into emp_table(emp_name, salary) 
+values('Ravi',50000),('John',90000),('Shilpa',80000),('Priya',55000),('Mohan',75000),('Akhil',75000),('Manoj',95000),
+ ('Shekar',60000),('Kumar',65000),('Komal',95000);
+
+select * from emp_table;
+
+select * from emp_table where salary=75000;
+explain select * from emp_table where salary=75000;
+
+To create an Index:
+create index salary_index on emp_table(salary);
+
+To Drop an Index:
+drop index salary_index;
+________________________________________________________________________________________
+
+DCL Commands (Data Control Language)
+
+Creating a User
+create user PS1 password '11111';
+
+Granting Permissions:
+grant select on employee to PS1;
+grant insert on employee to PS1;
+grant update on employee to PS1;
+grant delete on employee to PS1;
+
+select * from employee;
+
+Revoking Permissions
+revoke delete on employee from PS1;
+revoke update on employee from PS1;
+revoke insert on employee from PS1;
+revoke select on employee from PS1;
+
+To revoke all permissions in one go:
+revoke all on employee from PS1;
+
+Remove a User:
+drop user PS1;
+
+

@@ -1,0 +1,144 @@
+
+Day 8 - Sub Queries, Triggers
+
+create table department (id int primary key, name varchar);
+insert into department values(1,'IT'),(2,'HR');
+select * from department;
+
+create table employee2
+(id serial primary key, 
+ name varchar, 
+ salary real, 
+ departmentId int,
+ foreign key(departmentId) references department(id)
+);
+insert into employee2 (name, salary, departmentId)
+values ('Ravi',70000,1),('Ram',90000,1),('Priya',80000,2),('Mohan',75000,2),('Shilpa',92000,1);
+select * from employee2;
+__________________________________________________________________________________________________________________
+
+Find out the names of Employees whose salary is less than the overall average
+
+Select avg(salary) as average from employee2;  --- 81116
+select * from employee2 where salary < 81116;
+
+select * from employee2 where salary < (Select avg(salary) from employee2);
+__________________________________________________________________________________________________________________
+
+To get the highest salary by department- 
+select max(salary) from employee2 group by departmentId;
+
+To show the department id also - 
+select departmentId, max(salary) from employee2 group by departmentId;
+
+To show the name of the department?
+select departmentId, department.name, max(salary) from employee2 inner join department 
+on employee2.departmentId = department.id
+group by departmentId, department.name;
+
+To show the name of the employee also?
+select departmentId, department.name, employee2.name, max(salary) from employee2 inner join department 
+on employee2.departmentId = department.id
+group by departmentId, department.name, employee2.name; 
+
+1	"IT"	"Shilpa"	92000
+2	"HR"	"Priya"	80000
+1	"IT"	"Ram"	90000
+1	"IT"	"Ravi"	70000
+2	"HR"	"Mohan"	75000
+
+This doesn't work as we are now creating groups on the combination of Department and Employee.
+
+select department.name, employee2.name, salary 
+from employee2 inner join department 
+on employee2.departmentId = department.id 
+where (departmentId, salary) in 
+(select departmentId, max(salary) as salary from employee2 group by departmentId);
+
+Output:
+"IT"	"Ram"	90000
+"HR"	"Priya"	80000
+"IT"	"Shilpa"	92000
+_______________________________________________________________________________________________________
+
+Selecting the second highest salary of an employee
+
+select max(salary) from employee2; --- this will give the maximum salary
+Suppose we need those salaries which are less than this -
+select salary from employee2 where salary < (select max(salary) from employee2);
+
+the second maximum means - the maximum of this new list list - 
+select max(salary) from employee2 where salary < (select max(salary) from employee2);
+
+how to get top nth, this would not be an optimum solution, instead we can use this -
+select salary as second_highest_salary from employee2 order by salary desc offset 1 limit 1;
+_______________________________________________________________________________________________________
+
+TRIGGERS
+
+create table sales_data(
+cust_name varchar not null,
+product_name varchar not null,
+sales real not null,
+quantity int not null,
+total_price real
+);
+
+insert into sales_data values('Ravi','Chair',500.0,5),('Ram','Bookcase',3000.0,2);
+
+select * from sales_data;
+
+CREATE THE FUNCTION:
+create function calc_tot_price()    
+returns trigger          
+as $$
+declare
+	total numeric;
+begin
+	total = new.sales * new.quantity;
+	new.total_price = total;
+	return new;
+end;
+$$ language plpgsql;
+
+CREATE THE TRIGGER
+create trigger calc_tot_insert
+before insert
+on sales_data
+for each row
+execute procedure calc_tot_price();
+___________________________________________________________________________________
+Automatically updating the lastest timestamp whenever a record is updated
+
+Create table employee(
+id serial primary key,
+name varchar not null,
+dept varchar not null,
+date_of_joining date not null default current_date,
+status varchar default 'Active',
+salary real not null,
+last_updated timestamp default CURRENT_TIMESTAMP
+);
+insert into employee (name,dept,salary) values ('Ravi Kiran','HR',40000.00), 
+('Priya Darshini','IT',25000.00),('Mohan Bhargav','Finance',30000.00);
+
+select * from employee;
+
+CREATE  FUNCTION update_on_status_change()
+RETURNS TRIGGER 
+AS $$
+BEGIN
+    NEW.last_updated = now();
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+CREATE TRIGGER status_updated_on
+    BEFORE UPDATE
+    ON
+	employee
+    FOR EACH ROW
+EXECUTE PROCEDURE update_on_status_change();
+
+update employee set status='InActive' where name = 'Priya Darshini';
+_____________________________________________________________________________________________________

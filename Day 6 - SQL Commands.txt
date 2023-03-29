@@ -1,0 +1,88 @@
+/* Create a Table "employee" */
+create table employee(id serial primary key,
+ name varchar(20) not null,
+ dept varchar(10) not null,
+ date_of_joining timestamp not null default current_timestamp,
+ status varchar(10) default 'Active',
+ salary real not null,
+ last_updated timestamp default now());
+ 
+/* Insert Data into the employee table */
+insert into employee (name, dept, salary) values ('Ravi Kiran', 'HR', 40000.00), 
+('Priya Darshini', 'IT', 25000.00),('Mohan Bhargav', 'IT', 30000.00);
+insert into employee (name, dept, salary) values ('Raja Ram', 'HR', 45000.00), 
+('Shilpa Sharma', 'IT', 25000.00),('Akhil K', 'IT', 35000.00);
+
+/* Retrieve the data from employee table */
+select * from employee;
+
+/*To get the total number of records */ 
+select count(*) as number_of_recrods from employee;
+
+/* How many departments are present */
+select count(distinct dept) as number_of_depatments from employee;
+
+/* To get the number of people getting salary of more than 30000 */
+select count(name) from employee where salary>30000;
+
+/* To get the number of people getting salary of more than 30000 but less than 45000 */
+select count(name) from employee where salary>30000 and salary <45000;
+select count(name) from employee where salary between 30000 and 45000;
+
+/* Total salaries being paid to employees */
+select sum(salary) from employee;
+
+/* Average of the salaries being paid to the employees */
+select avg(salary) from employee;
+
+/*Minimum salary being paid */
+select min(salary) from employee;
+
+/*Maximum salary being paid */
+select max(salary) from employee;
+
+/* Identify the employee who is getting minimum salary */
+select name, salary from employee order by salary limit 1;
+
+/* Identify the employee who is getting maximum salary */
+select name, salary from employee order by salary desc limit 1;
+
+/* alter table employee to add location column */
+alter table employee add column location varchar(20) not null default 'Hyderabad';
+
+/* Update a few employees locations */
+update employee set location='Chennai' where name in ('Priya Darshini', 'Ravi Kiran');
+update employee set location='Mumbai' where id = 6;
+
+select * from employee order by id;
+
+/* delete records from a table */
+delete from employee where name='Akhil K';
+
+insert into employee (name, dept, salary, location) values ('Akhil K', 'IT', 35000.00, 'Hyderabad'), ('Komal K', 'IT', 50000.00, 'Mumbai');
+
+/* Group By and Having Clauses */
+/* number of employees in each location */
+select location, count(*) as num_of_employees from employee group by location;
+
+/*number of employees in each location in each department*/
+select location, dept, count(*) from employee group by location, dept;
+
+/* number of employees in each location in each department and salary above 35000 */ 
+select location, dept, count(*) from employee where salary>35000 group by location, dept ;
+
+select location, count(*) as total from employee group by location;
+select location, count(*) as total from employee group by location having count(*) > 1;
+
+/* Number of People from Hyderabad */
+Select location, count(*) from employee where location = 'Hyderabad' group by location
+
+Select location count(*) from employee group by location having location = 'Hyderabad'
+
+
+
+
+
+
+
+

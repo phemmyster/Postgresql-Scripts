@@ -1,0 +1,213 @@
+Day 3 - 
+Primary Key,  Composite Primary Key, Unique Key.
+
+create table student(
+first_name varchar(20) not null,
+last_name varchar(20) not null,
+age int not null,
+course_enrolled varchar(20) not null default 'Data Analytics',
+course_fee int not null
+);
+
+insert into student(first_name,last_name,age,course_fee) values ('Madhavi','Kumari',24,40000);
+insert into student(first_name,last_name,age,course_fee) values ('Madhavi','Kumari',24,40000);
+
+select * from student;
+drop table student;
+
+CREATE A TABLE WITH AN "ID"COLUMN
+create table student(
+id int,
+first_name varchar(20) not null,
+last_name varchar(20) not null,
+age int not null,
+course_enrolled varchar(20) not null default 'Data Analytics',
+course_fee int not null
+);
+
+
+insert into student(id,first_name,last_name,age,course_fee) values (1,'Madhavi','Kumari',24,40000);
+insert into student(id,first_name,last_name,age,course_fee) values (1,'Madhavi','Kumari',24,40000);
+
+select * from student;
+drop table student;
+
+create table student(
+id int primary key,
+first_name varchar(20) not null,
+last_name varchar(20) not null,
+age int not null,
+course_enrolled varchar(20) not null default 'Data Analytics',
+course_fee int not null
+);
+
+insert into student(id,first_name,last_name,age,course_fee) values (null,'Madhavi','Kumari',24,40000);
+--- this will show an error because Primary Key cannot be null.
+
+insert into student(id,first_name,last_name,age,course_fee) values (1,'Madhavi','Kumari',24,40000);
+insert into student(id,first_name,last_name,age,course_fee) values (1,'Madhavi','Kumari',24,40000);
+---this will show an error that primary key cannot be duplicate
+
+insert into student(id,first_name,last_name,age,course_fee) values (2,'Madhavi','Kumari',24,40000);
+select * from student;
+drop table student;
+
+create table student(
+id int,
+first_name varchar(20) not null,
+last_name varchar(20) not null,
+age int not null,
+course_enrolled varchar(20) not null default 'Data Analytics',
+course_fee int not null,
+primary key(id)
+);
+
+insert into student(id,first_name,last_name,age,course_fee) values (1,'Madhavi','Kumari',24,40000);
+insert into student(id,first_name,last_name,age,course_fee) values (2,'Madhavi','Kumari',24,40000);
+
+COMPOSITE PRIMARY KEY
+create table sales_rep(
+rep_fname varchar(20) not null,
+rep_lname varchar(20) not null,
+salary int not null
+);
+
+insert into sales_rep(rep_fname,rep_lname,salary) values('Anil','Sharma',25000),('Ankit','Verma',30000),('Anil','Sharma',25000);
+
+select * from sales_rep;
+drop table sales_rep;
+
+create table sales_rep(
+rep_fname varchar(20) not null,
+rep_lname varchar(20) not null,
+salary int not null,
+primary key(rep_fname,rep_lname)
+);
+
+insert into sales_rep(rep_fname,rep_lname,salary) values('Anil','Sharma',25000),('Ankit','Verma',30000),('Anil','Sharma',25000);
+--- will throw an error
+
+insert into sales_rep(rep_fname,rep_lname,salary) values('Anil','Sharma',25000),('Ankit','Verma',30000),('Sunil','Sharma',25000);
+
+select * from sales_rep;
+
+
+Primary Key is used to recognize each record in a distinct manner, it will not accept nulls and there can be only one Primary Key in a table.
+Primary Key could be on multiple columns - Composite Primary Key.
+_______________________________________________________________________________________________________________
+
+UNIQUE KEY - ALLOW ONLY DISTINCT VALUES TO BE ENTERED IN A FIELD.
+A Table can have multiple Unique Keys. Null entries are allowed.
+
+create table email_registration(
+f_name varchar(20) not null,
+l_name varchar(20) not null,
+email varchar(50) not null
+);
+
+insert into email_registration values ('Mohan','Bhargav','mohan_b@gmail.com');
+insert into email_registration values ('Mohan','Bhajpai','mohan_b@gmail.com');
+
+select * from email_registration;            
+--- 2 people with the same email id, whic should not be allowed
+
+drop table email_registration;
+create table email_registration(
+f_name varchar(20),
+l_name varchar(20),
+email varchar(50) unique,
+primary key(f_name,l_name)
+);
+
+insert into email_registration values ('Mohan','Bhargav','mohan_b@gmail.com');
+insert into email_registration values ('Mohan','Bhajpai',null);
+---will be allowed
+
+drop table email_registration;
+create table email_registration(
+f_name varchar(20) not null,
+l_name varchar(20) not null,
+email varchar(50) not null unique key,
+primary key(f_name,l_name)
+);
+
+desc email_registration;
+
+insert into email_registration values ('Mohan','Bhargav','mohan_b@gmail.com');
+insert into email_registration values ('Mohan','Bhajpai','mohan_b@gmail.com');
+--- second insert statement will throw an error "duplicate entry)
+
+insert into email_registration values ('Mohan','Bhajpai',null);
+---wont work as 'null' is given for email, which voilates the not null constraint
+
+insert into email_registration values ('Mohan','Bhajpai','mohan_bhajpai@gmail.com');
+
+insert into email_registration values ('Sakshi',null,'sakshi@gmail.com');
+insert into email_registration values ('Sakshi','Rajpoot','sakshi_r@gmail.com');
+
+select * from email_registration;
+UNIQUE KEY is used to make sure unique values (no duplicates) are entered into a field.
+UNIQUE KEY can take NULL also, and we can have multiple unique keys in a table.
+_________________________________________________________________________________________________
+
+Difference between Primary Key and Unique Key - 
+1) There can be only 1 Primary key, whereas there can be multiple Unique Keys
+2) Primary Key cannot be NULL, whereas Unique Key could be NULL
+_________________________________________________________________________________________________
+
+
+Foreign Key Constraint
+__________________________________________________________________________________________
+
+
+Create a table employee-
+create table employee(
+id serial primary key,
+f_nm varchar(20) not null,
+l_nm varchar(20) not null,
+age int not null,
+location varchar(20) not null default 'Hyderabad',
+dept varchar(20) not null
+);
+
+Insert some values into it - 
+insert into employee (f_nm,l_nm,age,dept) values ('mohan','bhargav',30,'IT'),('manoj','bajpai',35,'HR'),('Rani','Kumari',40,'Finance');
+
+Create a Department table with the names of all the departments in the company -
+create table department(
+dept_name varchar(30) primary key,
+dept_head varchar(30)
+);
+
+desc table department;
+Insert data into the departments table - 
+insert into department (dept_name,dept_head) values ('IT','Ravi Kiran'),('Finance',null),('HR','Swati Rao');
+
+Insert more records into employee with new departments -
+insert into employee (f_nm,l_nm,age,dept) values ('priya','darshini',30,'HealthCare');
+
+Add the foreign key contraint - 
+alter table employee add foreign key(dept) references department(dept_name);
+This will fail as we already have a record with Health Care.
+
+Let's delete that record.
+delete from employee where f_nm = 'priya';
+
+Now add the constraint - 
+alter table employee add foreign key(dept) references department(dept_name);
+
+Now try inserting a record with a deparment name that is not in the department table - 
+insert into employee (f_nm,l_nm,age,dept) values ('priya','darshini',30,'HealthCare');
+
+insert into employee (f_nm,l_nm,age,dept) values ('priya','darshini',30,'IT');
+
+Now let's try to delete a department from the department table - 
+delete from department where dept_name = 'HR'; 
+
+This is not allowed due to the foreign key constraint. 
+
+Suppose, there is no data in employee table with that department, then what would happen -
+delete from employee where dept = 'HR';
+
+Now, the (delete from department where dept_name = "HR";) statement will work.
+_____________________________________________________________________________________________________________

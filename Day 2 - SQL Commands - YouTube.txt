@@ -1,0 +1,57 @@
+
+CREATE TABLE employee(
+ first_name varchar(20),
+ mid_name varchar(20),
+ last_name varchar(20),
+ age int,
+ salary int,
+ location varchar(20)
+);
+
+Inserting Data/Records into the Table:
+INSERT INTO employee VALUES('Raja','Ram','Roy',32,35000,'Hyderabad');
+INSERT INTO employee(first_name,last_name,age,salary,location) VALUES('Mohan','Roy',28,35000,'Hyderabad');
+
+drop table employee;
+
+
+CREATE TABLE employee(
+first_name varchar(20) NOT NULL,
+mid_name varchar(20),
+last_name varchar(20) NOT NULL,
+age int NOT NULL,
+salary int NOT NULL,
+location varchar(20) DEFAULT 'Hyderbad' NOT NULL
+);
+
+INSERT INTO employee(first_name,last_name,age,salary) VALUES('Mohan','Roy',28,35000);
+
+insert into employee(first_name,mid_name,last_name,age,salary,location) values('Steve',null,'Donald',50,750000,'Chennai');
+
+
+Bulk Insert - 
+INSERT INTO employee(first_name,last_name,age,salary) VALUES('Mohan','Roy',28,35000),('Raja','Ram',25,25000),('Pr
+iya','Kapoor',32,40000);
+
+select * from employee;
++------------+----------+-----------+-----+--------+----------+
+| first_name | mid_name | last_name | age | salary | location |
++------------+----------+-----------+-----+--------+----------+
+| Mohan      | NULL     | Roy       |  28 |  35000 | Hyderbad |
+| Raja       | NULL     | Ram       |  25 |  25000 | Hyderbad |
+| Priya      | NULL     | Kapoor    |  32 |  40000 | Hyderbad |
++------------+----------+-----------+-----+--------+----------+
+
+INSERT INTO employee(first_name,last_name,age,salary,location) VALUES('Rani','Sharma',28,35000,'Chennai'),('Vamsi','Krishna',40,250000,'Bangalore');
+
+CREATE TABLE Customer(
+Customer_Id varchar,
+Customer_Name varchar,
+Segment varchar,
+Age int,
+Country varchar,
+City varchar,
+State varchar,
+Postal_Code varchar,
+Region varchar
+);
